@@ -14,3 +14,20 @@ services:
     environment:
       - JELLYFIN_PublishedServerUrl=http://datenschleuder.local:8096
       - TZ=Europe/Berlin
+
+  tvheadend:
+    build:
+      context: ./tvheadend_docker/
+      dockerfile: Dockerfile
+    container_name: tvheadend
+    # REMOVE THIS LINE: user: ${PUID}:${PGID} 
+    network_mode: host
+    environment:
+      - PUID=${PUID} 
+      - PGID=${PGID}
+      - TZ=Europe/Berlin
+      - RUN_OPTS=--satip_xml http://192.168.178.1:49000/satipdesc.xml
+    volumes:
+      - ${TV_HEAD_END_CONFIG}:/config
+      - ${TV_HEAD_END_RECORD}:/recordings
+    restart: unless-stopped
